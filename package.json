@@ -1,0 +1,14 @@
+{
+  "name": "utility-functions",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "source/index.js",
+  "keywords": [
+    "javascript",
+    "utilities",
+    "functional programming"
+  ],
+  "author": "yurkimus <yurkimus@gmail.com>",
+  "license": "ISC",
+  "description": "Simple utilities to speak functional on JavaScript."
+}
