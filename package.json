@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@yurkimus/functions",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "exports": "./source/index.js",
   "dependencies": {
     "@yurkimus/types": "github:yurkimus/types"
