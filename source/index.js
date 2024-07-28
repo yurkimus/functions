@@ -1,14 +1,4 @@
-/**
- * Gets the type of a value as a string.
- *
- * @returns {string}
- *
- * @example
- *  type('Hello!') // returns 'String'
- *  type(async () => {}) // returns 'AsyncFunction'
- *  type(new URLSearchParams()) // returns 'URLSearchParams'
- */
-export var type = (value) => Object.prototype.toString.call(value).slice(8, -1)
+import { type, is, isLike } from '@yurkimus/types'
 
 /**
  * Returns the same value.
@@ -20,21 +10,28 @@ export var type = (value) => Object.prototype.toString.call(value).slice(8, -1)
  * @returns {Parameter}
  *
  * @example
- *  identity(42) // returns 42
+ * ```javascript
+ * identity(42) // returns 42
+ * ```
  */
 export var identity = (value) => value
 
 /**
  * Returns a curried version of a function.
  *
- * @throws {TypeError} 'predicate' must be a function
+ * @throws {TypeError} "predicate" must be a function
+ * @throws {TypeError} "length" must be a number
  *
  * @example
  *  curry((a, b) => a + b)(1)(2) // returns 3
  */
 export var curry = (predicate, length = predicate.length) => {
-  if (!type(predicate).includes('Function')) {
+  if (!isLike('Function', predicate)) {
     throw new TypeError('"predicate" must be a function')
+  }
+
+  if (!is('Number', length)) {
+    throw new TypeError('"length" must be a number')
   }
 
   return (...parameters) =>
@@ -46,24 +43,24 @@ export var curry = (predicate, length = predicate.length) => {
 /**
  * Composes multiple functions into a single function.
  *
- * @throws {TypeError} 'predicates' must be an array of functions
+ * @throws {TypeError} "predicates" must be a list of functions
  *
  * @example
  *  // Standard invocation
  *  compose(n => Math.pow(n, 2), n => n + 1)(5) // returns 25
  *
- *  // Automatic array arguments application
+ *  // Automatic ArrayLike arguments application
  *  compose(Math.pow, n => [n + 1, 2])(4) // returns 25
  */
 export var compose = (...predicates) => {
-  if (!predicates.every((predicate) => type(predicate).includes('Function'))) {
-    throw new TypeError('"predicates" must be an array of functions')
+  if (!predicates.every((predicate) => isLike('Function', predicate))) {
+    throw new TypeError('"predicates" must be a list of functions')
   }
 
   return (...parameters) =>
     predicates.reduceRight(
       (parameters, predicate) =>
-        Array.isArray(parameters)
+        is('Array', parameters)
           ? predicate(...parameters)
           : predicate(parameters),
       parameters
@@ -75,8 +72,8 @@ export var compose = (...predicates) => {
  *
  * @see {@link compose}
  *
- * @throws {TypeError} 'aggregator' must be a function
- * @throws {TypeError} 'predicates' must be an array of functions
+ * @throws {TypeError} "aggregator" must be a function
+ * @throws {TypeError} "predicates" must be a list of functions
  *
  * @example
  *  // Standard invocation
@@ -86,7 +83,7 @@ export var compose = (...predicates) => {
  *    x => x + 1
  *  )(4) // returns 49
  *
- *  // Automatic array arguments application
+ *  // Automatic ArrayLike arguments application
  *  aggregate(
  *    (f, ...parameters) => f(...parameters.with(0, parameters.at(0) + 1)),
  *    Math.pow,
@@ -94,18 +91,18 @@ export var compose = (...predicates) => {
  *  )(4) // returns 49
  */
 export var aggregate = (aggregator, ...predicates) => {
-  if (!type(aggregator).includes('Function')) {
+  if (!isLike('Function', aggregator)) {
     throw new TypeError('"aggregator" must be a function')
   }
 
-  if (!predicates.every((predicate) => type(predicate).includes('Function'))) {
-    throw new TypeError('"predicates" must be an array of functions')
+  if (!predicates.every((predicate) => isLike('Function', predicate))) {
+    throw new TypeError('"predicates" must be a list of functions')
   }
 
   return (...parameters) =>
     predicates.reduceRight(
       (parameters, predicate) =>
-        Array.isArray(parameters)
+        is('Array', parameters)
           ? aggregator(predicate, ...parameters)
           : aggregator(predicate, parameters),
       parameters
@@ -115,7 +112,7 @@ export var aggregate = (aggregator, ...predicates) => {
 /**
  * Partially applies a function.
  *
- * @throws {TypeError} 'predicate' must be a function
+ * @throws {TypeError} "predicate" must be a function
  *
  * @example
  *  let add = (a, b) => a + b
@@ -123,7 +120,9 @@ export var aggregate = (aggregator, ...predicates) => {
  *  partial(add, 1)(2) // returns 3
  */
 export var partial = curry((predicate, ...parameters) => {
-  if (!type(predicate).includes('Function')) {
+  console.log('[partial]')
+
+  if (!isLike('Function', predicate)) {
     throw new TypeError('"predicate" must be a function')
   }
 
@@ -133,7 +132,7 @@ export var partial = curry((predicate, ...parameters) => {
 /**
  * Defers the execution of a function.
  *
- * @throws {TypeError} 'predicate' must be a function
+ * @throws {TypeError} "predicate" must be a function
  *
  * @example
  *  let add = (a, b) => a + b
@@ -141,7 +140,7 @@ export var partial = curry((predicate, ...parameters) => {
  *  defer(add, 1, 2)() // => returns 3
  */
 export var defer = curry((predicate, ...parameters) => {
-  if (!type(predicate).includes('Function')) {
+  if (!isLike('Function', predicate)) {
     throw new TypeError('"predicate" must be a function')
   }
 
@@ -151,31 +150,58 @@ export var defer = curry((predicate, ...parameters) => {
 /**
  * Invokes a method on an object. At least one argument must be provided.
  *
- * @throws {TypeError} 'method' must exists on 'object'
- * @throws {TypeError} 'method' must be a Function
+ * @throws {TypeError} "method" must exist on "object"
+ * @throws {TypeError} "method" must be a function
  *
  * @example
  *  invoke('at', ['a', 'b', 'c'], 1) // returns 'b'
  */
 export var invoke = curry((method, object, ...parameters) => {
   if (!(method in object)) {
-    throw new TypeError('"method" must exists on "object"!')
+    throw new TypeError('"method" must exist on "object"')
   }
 
-  if (!type(object[method]).includes('Function')) {
-    throw new TypeError('"method" must be a Function')
+  if (!isLike('Function', object[method])) {
+    throw new TypeError('"method" must be a function')
   }
 
   return object[method](...parameters)
 })
 
 /**
+ * Triggers a method on an object with provided arguments.
+ *
+ * @see {@link invoke} {@link method}
+ *
+ * @throws {TypeError} "method" must exist on "object"
+ * @throws {TypeError} "method" must be a function
+ *
+ * @example
+ *  trigger('has', 'status')(new URLSearchParams()) // returns false
+ */
+export var trigger = curry(
+  (method, ...parameters) =>
+    (object) => {
+      if (!(method in object)) {
+        throw new TypeError('"method" must exist on "object"')
+      }
+
+      if (!isLike('Function', object[method])) {
+        throw new TypeError('"method" must be a function')
+      }
+
+      return object[method](...parameters)
+    },
+  2
+)
+
+/**
  * Invokes a method on an object. No need to provide any arguments as with invoke
  *
- * @see {@link invoke}
+ * @see {@link invoke} {@link trigger}
  *
- * @throws {TypeError} 'method' must exists on 'object'
- * @throws {TypeError} 'method' must be a Function
+ * @throws {TypeError} "method" must exists on "object"
+ * @throws {TypeError} "method" must be a function
  *
  * @example
  *  method('toUpperCase', 'Hello!') // returns 'HELLO!'
@@ -185,8 +211,8 @@ export var method = curry((method, object, ...parameters) => {
     throw new TypeError('"method" must exists on "object"')
   }
 
-  if (!type(object[method]).includes('Function')) {
-    throw new TypeError('"method" must be a Function')
+  if (!isLike('Function', object[method])) {
+    throw new TypeError('"method" must be a function')
   }
 
   return object[method](...parameters)
@@ -195,14 +221,14 @@ export var method = curry((method, object, ...parameters) => {
 /**
  * Executes a function for its side-effects and returns the original parameter.
  *
- * @throws {TypeError} 'predicate' must be a Function
+ * @throws {TypeError} "predicate" must be a function
  *
  * @example
  *  effect(console.log, 'Hello') // Logs 'Hello', returns 'Hello'
  */
 export var effect = curry((predicate, parameter) => {
-  if (!type(predicate).includes('Function')) {
-    throw new TypeError('"predicate" must be a Function')
+  if (!isLike('Function', predicate)) {
+    throw new TypeError('"predicate" must be a function')
   }
 
   return predicate(parameter), parameter
@@ -211,14 +237,14 @@ export var effect = curry((predicate, parameter) => {
 /**
  * Assigns a property to an object.
  *
- * @throws {TypeError} 'object' must be assignable
+ * @throws {TypeError} "object" must be a truthy value
  *
  * @example
  *  assign('a', 1, { b: 2 }) // returns 1
  */
 export var assign = curry((property, value, object) => {
-  if (type(object) == 'Null' || type(object) == 'Undefined') {
-    throw new TypeError('"object" must be assignable')
+  if (['Null', 'Undefined'].includes(type(object))) {
+    throw new TypeError('"object" must be a truthy value')
   }
 
   return (object[property] = value)
@@ -227,7 +253,8 @@ export var assign = curry((property, value, object) => {
 /**
  * Gets the value of a property or path from an object.
  *
- * @throws {TypeError} 'properties' must be a USVString or sequence<USVString>
+ * @throws {TypeError} "properties" must be a string or an array of keys
+ * @throws {TypeError} Can't act as a path when working with *, provide single key instead
  *
  * @example
  *  // Standard invocation
@@ -237,25 +264,61 @@ export var assign = curry((property, value, object) => {
  *  prop(['a', 'b'], { a: { b: 2 } }) // returns 2
  */
 export var prop = curry((properties, object) => {
-  if (
-    !['Array', 'Symbol', 'String', 'Number', 'Boolean'].some(
-      (value) => type(properties) == value
-    )
-  ) {
-    throw new TypeError(
-      '"properties" must be a USVString or sequence<USVString>'
-    )
-  }
+  switch (type(properties)) {
+    case 'Array':
+      switch (type(object)) {
+        case 'Map':
+        case 'WeakMap':
+        case 'URLSearchParams':
+        case 'FormData':
+        case 'Headers':
+        case 'CSSStyleDeclaration':
+        case 'Storage':
+        case 'DataTransfer':
+          throw new TypeError(
+            `Can't act as a path when working with ${type(
+              object
+            )}, provide single key instead`
+          )
 
-  return Array.isArray(properties)
-    ? properties.reduce((value, property) => value?.[property], object)
-    : object?.[properties]
+        default:
+          return properties.reduce(
+            (value, property) => value?.[property],
+            object
+          )
+      }
+
+    case 'String':
+      switch (type(object)) {
+        case 'Map':
+        case 'WeakMap':
+        case 'URLSearchParams':
+        case 'FormData':
+        case 'Headers':
+          return object.get(properties)
+
+        case 'CSSStyleDeclaration':
+          return object.getPropertyValue(properties)
+
+        case 'Storage':
+          return object.getItem(properties)
+
+        case 'DataTransfer':
+          return object.getData(properties)
+
+        default:
+          return object?.[properties]
+      }
+
+    default:
+      throw new TypeError('"properties" must be a string or an array of keys')
+  }
 })
 
 /**
  * Gets the values of multiple properties or paths from an object.
  *
- * @throws {TypeError} 'properties' must be a string array
+ * @throws {TypeError} "properties" must be an array with elements according to the properties of the "prop" function
  *
  * @example
  *  // Standard invocation
@@ -265,18 +328,19 @@ export var prop = curry((properties, object) => {
  *  props(['a', ['b', 'c']], { a: 1, b: { c: 2 } }) // returns [1, 2]
  */
 export var props = curry((properties, object) => {
-  if (!(type(properties) == 'Array')) {
-    throw new TypeError('"properties" must be a string array')
-  }
+  if (!isLike('Array', properties))
+    throw new TypeError(
+      '"properties" must be an array with elements according to the properties of the "prop" function'
+    )
 
-  return properties.map((property) => prop(property, object))
+  return properties.map((property) => object?.[property])
 })
 
 /**
  * Creates a new instance of a constructor.
  *
  * @example
- *  construct(Date, 2022, 0, 1) // returns Date instance
+ *  construct(Date, 2022, 0, 1) // returns Date { ... }
  */
 export var construct = curry(
   (Constructor, ...parameters) => Reflect.construct(Constructor, parameters),
@@ -286,9 +350,9 @@ export var construct = curry(
 /**
  * Executes one of two functions based on a predicate.
  *
- * @throws {TypeError} 'predicate' must be a Function
- * @throws {TypeError} 'onTrue' must be a Function
- * @throws {TypeError} 'onFalse' must be a Function
+ * @throws {TypeError} "predicate" must be a function
+ * @throws {TypeError} "onTrue" must be a function
+ * @throws {TypeError} "onFalse" must be a function
  *
  * @example
  *  // Standard invocation
@@ -299,16 +363,16 @@ export var construct = curry(
  *  )(true) // => Logs 'True'
  */
 export var condition = curry((predicate, onTrue, onFalse, ...parameters) => {
-  if (!type(predicate).includes('Function')) {
-    throw new TypeError('"predicate" must be a Function')
+  if (!isLike('Function', predicate)) {
+    throw new TypeError('"predicate" must be a function')
   }
 
-  if (!type(onTrue).includes('Function')) {
-    throw new TypeError('"onTrue" must be a Function')
+  if (!isLike('Function', onTrue)) {
+    throw new TypeError('"onTrue" must be a function')
   }
 
-  if (!type(onFalse).includes('Function')) {
-    throw new TypeError('"onFalse" must be a Function')
+  if (!isLike('Function', onFalse)) {
+    throw new TypeError('"onFalse" must be a function')
   }
 
   return predicate(...parameters)
@@ -333,7 +397,7 @@ export var raise = (value) => {
 /**
  * Extracts the results of multiple functions applied to provided arguments.
  *
- * @throws {TypeError} 'predicates' must be an array of functions
+ * @throws {TypeError} "predicates" must be an array of functions
  *
  * @example
  *  extract(
@@ -344,9 +408,7 @@ export var raise = (value) => {
 export var extract =
   (...predicates) =>
   (...parameters) => {
-    if (
-      !predicates.every((predicate) => type(predicate).includes('Function'))
-    ) {
+    if (!predicates.every((predicate) => isLike('Function', predicate))) {
       throw new TypeError('"predicates" must be an array of functions')
     }
 
@@ -356,18 +418,18 @@ export var extract =
 /**
  * Aggregates the results of multiple functions.
  *
- * @throws {TypeError} 'aggregator' must be a Function
- * @throws {TypeError} 'predicates' must be an array of functions
+ * @throws {TypeError} "aggregator" must be a function
+ * @throws {TypeError} "predicates" must be an array of functions
  *
  * @example
  *  use(Math.pow, x => x, x => x + 2)(5, 1) // returns 25
  */
 export var use = (aggregator, ...predicates) => {
-  if (!type(aggregator).includes('Function')) {
-    throw new TypeError('"aggregator" must be a Function')
+  if (!isLike('Function', aggregator)) {
+    throw new TypeError('"aggregator" must be a function')
   }
 
-  if (!predicates.every((predicate) => type(predicate).includes('Function'))) {
+  if (!predicates.every((predicate) => isLike('Function', predicate))) {
     throw new TypeError('"predicates" must be an array of functions')
   }
 
@@ -380,18 +442,18 @@ export var use = (aggregator, ...predicates) => {
 /**
  * Applies a function to an array of arguments.
  *
- * @throws {TypeError} 'predicate' must be a Function
- * @throws {TypeError} 'parameters' must be an array
+ * @throws {TypeError} "predicate" must be a function
+ * @throws {TypeError} "parameters" must be an array
  *
  * @example
  *  apply(Math.max, [1, 2, 3]) // returns 3
  */
 export var apply = curry((predicate, parameters) => {
-  if (!type(predicate).includes('Function')) {
-    throw new TypeError('"predicate" must be a Function')
+  if (!isLike('Function', predicate)) {
+    throw new TypeError('"predicate" must be a function')
   }
 
-  if (!(type(parameters) == 'Array')) {
+  if (!isLike('Array', parameters)) {
     throw new TypeError('"parameters" must be an array')
   }
 
@@ -401,23 +463,24 @@ export var apply = curry((predicate, parameters) => {
 /**
  * Adds an onfulfilled predicate to a Promise.
  *
- * @throws {TypeError} 'predicate' must be a Function
- * @throws {TypeError} 'thenable' must have method 'then'
+ * @throws {TypeError} "predicate" must be a function
+ * @throws {TypeError} "thenable" must have method "then"
+ * @throws {TypeError} property "then" of "thenable" must be a function
  *
  * @example
  *  then(console.log, Promise.resolve('Hello!')) // Logs 'Hello!'
  */
 export var then = curry((predicate, thenable) => {
-  if (!type(predicate).includes('Function')) {
-    throw new TypeError('"predicate" must be a Function')
+  if (!isLike('Function', predicate)) {
+    throw new TypeError('"predicate" must be a function')
   }
 
   if (!('then' in thenable)) {
     throw new TypeError('"thenable" must have method "then"')
   }
 
-  if (!type(thenable.then).includes('Function')) {
-    throw new TypeError('property "then" of "thenable" must be a Function')
+  if (!isLike('Function', thenable.then)) {
+    throw new TypeError('property "then" of "thenable" must be a function')
   }
 
   return thenable.then(predicate)
@@ -426,7 +489,7 @@ export var then = curry((predicate, thenable) => {
 /**
  * Creates an object from keys and values.
  *
- * @throws {TypeError} 'keys' must be a string or an array of string
+ * @throws {TypeError} "keys" must be a string or an array of keys
  *
  * @example
  *  // Standard invocation
@@ -447,7 +510,7 @@ export var objectOf = curry((keys, values) => {
       )
 
     default:
-      throw new TypeError('"keys" must be a string or an array of string')
+      throw new TypeError('"keys" must be a string or an array of keys')
   }
 })
 
@@ -471,10 +534,15 @@ export var modify = curry((scheme, value) => {
 /**
  * Executes a function with a specified argument's length.
  *
+ * @throws {TypeError} "predicate" must be a function
+ *
  * @example
  *  unary(parseInt, '42') // returns 42
  */
-export var unary = curry(
-  (predicate, ...parameters) => predicate(parameters.at(0)),
-  2
-)
+export var unary = curry((predicate, ...parameters) => {
+  if (!isLike('Function', predicate)) {
+    throw new TypeError('"predicate" must be a function')
+  }
+
+  return predicate(parameters.at(0))
+}, 2)

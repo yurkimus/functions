@@ -1,14 +1,9 @@
 {
-  "name": "functions",
   "type": "module",
-  "version": "1.0.0",
-  "main": "source/index.js",
-  "keywords": [
-    "javascript",
-    "utilities",
-    "functional programming"
-  ],
-  "author": "yurkimus <yurkimus@gmail.com>",
-  "license": "ISC",
-  "description": "Simple utilities to speak functional on JavaScript."
+  "name": "@yurkimus/functions",
+  "version": "0.1.1",
+  "exports": "./source/index.js",
+  "dependencies": {
+    "@yurkimus/types": "github:yurkimus/types"
+  }
 }
