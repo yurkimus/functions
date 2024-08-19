@@ -31,10 +31,12 @@ Functions with arity more than 1 are curried.
   - [prop](#prop)
     - [props](#props)
   - [raise](#raise)
+  - [satisfies](#satisfies)
   - [then](#then)
   - [trigger](#trigger)
+  - [unless](#unless)
   - [use](#use)
-
+  - [when](#when)
 - [License](#license)
 
 ## Installation
@@ -370,6 +372,20 @@ raise :: * -> throws
 raise('Message') // => throws 'Message'
 ```
 
+### satisfies
+
+#### Definition
+
+```
+satisfies :: function -> * -> boolean
+```
+
+#### Example
+
+```javascript
+satisfies((n) => n == 0, 0) // => true
+```
+
 ### extract
 
 #### Definition
@@ -452,12 +468,54 @@ modify({
 }) // => { key: 'a', length: 5 }
 ```
 
+### unless
+
+#### Definition
+
+```
+unless :: function -> function -> * -> *
+```
+
+#### Example
+
+```javascript
+unless(
+  (n) => n == 0,
+  console.log.bind(console, 'not equals 0, value: '),
+  1,
+) // => logs 'not equals 0, value: 1'
+```
+
 ### use
 
 #### Definition
 
 ```
 use :: function -> function -> *
+```
+
+#### Example
+
+```javascript
+// To do
+```
+
+### when
+
+#### Definition
+
+```
+when :: function -> function -> * -> *
+```
+
+#### Example
+
+```javascript
+when(
+  (n) => n == 0,
+  console.log.bind(console, 'equals 0, value: '),
+  0,
+) // => logs 'equals 0, value: 0'
 ```
 
 ## License

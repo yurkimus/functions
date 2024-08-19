@@ -1,7 +1,6 @@
 import { curry } from '@yurkimus/curry'
-import { isLike, type } from '@yurkimus/types'
 
-export var field = curry((key, object) => {
+export var includes = curry((value, object) => {
   switch (type(object)) {
     case 'Array':
     case 'TypedArray':
@@ -17,37 +16,32 @@ export var field = curry((key, object) => {
     case 'Uint32Array':
     case 'Uint8Array':
     case 'Uint8ClampedArray':
-      return object.at(key)
+      return object.includes(value)
 
     case 'Map':
-    case 'WeakMap':
     case 'Headers':
     case 'URLSearchParams':
     case 'FormData':
-      return object.get(key)
+      return Array
+        .from(object)
+        .map((entry) => entry.at(1))
+        .includes(value)
 
     case 'CSSStyleDeclaration':
-      return object.getPropertyValue(key)
+      return object.getPropertyValue(value)
 
     case 'Storage':
-      return object.getItem(key)
+      return object.getItem(value)
+
+    case 'DataTransfer':
+      return object.getData(value)
+
+    case 'Date':
+      return object.getTime()
 
     default:
       throw new TypeError(
         `Getter for type "${type(object)}" is not implemented`,
       )
   }
-})
-
-export var fields = curry((keys, object) => {
-  if (!isLike('Array', keys)) {
-    throw new TypeError(
-      '"keys" must be an ArrayLike with elements according to the "key" of the "field" function',
-    )
-  }
-
-  return Array.prototype.map.call(
-    keys,
-    (key) => fields(key, object),
-  )
 })

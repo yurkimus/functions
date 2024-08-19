@@ -17,9 +17,12 @@ import { objectOf } from './objectOf.js'
 import { partial } from './partial.js'
 import { prop, props } from './prop.js'
 import { raise } from './raise.js'
+import { satisfies } from './satisfies.js'
 import { then } from './then.js'
 import { trigger } from './trigger.js'
+import { unless } from './unless.js'
 import { use } from './use.js'
+import { when } from './when.js'
 
 export {
   aggregate,
@@ -44,8 +47,11 @@ export {
   prop,
   props,
   raise,
+  satisfies,
   then,
   trigger,
   unary,
+  unless,
   use,
+  when,
 }
