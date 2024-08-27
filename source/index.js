@@ -9,6 +9,8 @@ import { defer } from './defer.js'
 import { effect } from './effect.js'
 import { extract } from './extract.js'
 import { field, fields } from './field.js'
+import { hasField, hasFields } from './hasField.js'
+import { hasProp, hasProps } from './hasProp.js'
 import { identity } from './identity.js'
 import { invoke } from './invoke.js'
 import { method } from './method.js'
@@ -38,6 +40,10 @@ export {
   extract,
   field,
   fields,
+  hasField,
+  hasFields,
+  hasProp,
+  hasProps,
   identity,
   invoke,
   method,

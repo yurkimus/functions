@@ -1,3 +1,4 @@
+import { curry } from '@yurkimus/curry'
 import { isLike } from '@yurkimus/types'
 
 export var unless = curry(

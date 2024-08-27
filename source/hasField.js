@@ -1,7 +1,7 @@
 import { curry } from '@yurkimus/curry'
 import { isLike, type } from '@yurkimus/types'
 
-export var field = curry((key, object) => {
+export var hasField = curry((key, object) => {
   switch (type(object)) {
     case 'Array':
     case 'TypedArray':
@@ -17,23 +17,21 @@ export var field = curry((key, object) => {
     case 'Uint32Array':
     case 'Uint8Array':
     case 'Uint8ClampedArray':
-      return object.at(key)
+      return object.includes(key)
 
     case 'Map':
     case 'WeakMap':
+    case 'Set':
+    case 'WeakSet':
     case 'Headers':
     case 'URLSearchParams':
     case 'FormData':
-      return object.get(key)
+      return object.has(key)
 
     case 'CSSStyleDeclaration':
-      return object.getPropertyValue(key)
-
     case 'Storage':
-      return object.getItem(key)
-
     case 'Object':
-      return Object.hasOwn(object, key) ? object[key] : undefined
+      return Object.hasOwn(object, key)
 
     default:
       throw new TypeError(
@@ -42,7 +40,7 @@ export var field = curry((key, object) => {
   }
 })
 
-export var fields = curry((keys, object) => {
+export var hasFields = curry((keys, object) => {
   if (!isLike('Array', keys)) {
     throw new TypeError(
       '"keys" must be an ArrayLike with elements according to the "key" of the "field" function',
@@ -51,6 +49,6 @@ export var fields = curry((keys, object) => {
 
   return Array.prototype.map.call(
     keys,
-    (key) => field(key, object),
+    (key) => hasField(key, object),
   )
 })
