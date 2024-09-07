@@ -10,18 +10,22 @@ Functions with arity more than 1 are curried.
 - [Exports](#exports)
   - [aggregate](#aggregate)
   - [apply](#apply)
+  - [applyTo](#applyTo)
   - [arity](#arity)
-    - [binary](#binary)
     - [unary](#unary)
+    - [binary](#binary)
   - [assign](#assign)
   - [compose](#compose)
   - [condition](#condition)
   - [construct](#construct)
   - [defer](#defer)
   - [effect](#effect)
+  - [enforce](#enforce)
   - [extract](#extract)
   - [field](#field)
     - [fields](#fields)
+  - [hasField](#hasField)
+  - [hasProp](#hasProp)
   - [identity](#identity)
   - [invoke](#invoke)
   - [method](#method)
@@ -68,7 +72,7 @@ npm install @yurkimus/functions
 #### Definition
 
 ```
-aggregate :: function -> [function] -> * -> *
+aggregate :: function -> ...function -> ...parameters -> *
 ```
 
 #### Example
@@ -82,7 +86,7 @@ aggregate :: function -> [function] -> * -> *
 #### Definition
 
 ```
-apply :: function -> * -> *
+apply :: function -> parameters -> *
 ```
 
 #### Example
@@ -91,12 +95,26 @@ apply :: function -> * -> *
 apply(Math.pow, [2, 3]) // => 8
 ```
 
+### applyTo
+
+#### Definition
+
+```
+applyTo :: parameters -> function -> *
+```
+
+#### Example
+
+```javascript
+applyTo([2, 3], Math.pow) // => 8
+```
+
 ### arity
 
 #### Definition
 
 ```
-arity :: number -> function -> * -> function
+arity :: number -> function -> ...parameters -> *
 ```
 
 #### Example
@@ -105,26 +123,12 @@ arity :: number -> function -> * -> function
 arity(1, Math.max, 1, 2, 3) // => 1
 ```
 
-### binary
-
-#### Definition
-
-```
-binary :: function -> * -> function
-```
-
-#### Example
-
-```javascript
-binary(Math.max, 1, 2, 3) // => 2
-```
-
 ### unary
 
 #### Definition
 
 ```
-unary :: function -> * -> function
+unary :: function -> ...parameters -> *
 ```
 
 #### Example
@@ -133,18 +137,33 @@ unary :: function -> * -> function
 unary(Math.max, 1, 2, 3) // => 1
 ```
 
-### identity
+### binary
 
 #### Definition
 
 ```
-identity :: * -> *
+binary :: function -> ...parameters -> *
 ```
 
 #### Example
 
 ```javascript
-identity(5) // => 5
+binary(Math.max, 1, 2, 3) // => 2
+```
+
+### assign
+
+#### Definition
+
+```
+assign :: string -> parameter -> object
+```
+
+#### Example
+
+```javascript
+// Returns the result of the assignment operation, see "effect" to prevent this behaviour
+assign('a', 1, {}) // => 1
 ```
 
 ### compose
@@ -159,184 +178,6 @@ compose :: ...function -> ...parameters -> *
 
 ```javascript
 compose(Math.sqrt, Math.abs)(-25) // => 5
-```
-
-### partial
-
-#### Definition
-
-```
-partial :: function -> * -> *
-```
-
-#### Example
-
-```javascript
-partial((a, b) => a + b, 2) // => (b) => a + b
-```
-
-### defer
-
-#### Definition
-
-```
-defer :: function -> * -> function
-```
-
-#### Example
-
-```javascript
-defer(console.log, '[message]') // => () => console.log('[message]')
-```
-
-### invoke
-
-#### Definition
-
-```
-invoke :: string -> object -> * -> *
-```
-
-#### Example
-
-```javascript
-// Arguments are required
-invoke('sqrt', Math, 25) // => 5
-```
-
-### trigger
-
-#### Definition
-
-```
-trigger :: string -> * -> object -> *
-```
-
-#### Example
-
-```javascript
-// The order is different from when using "invoke", arguments are required
-trigger('sqrt', 25)(Math) // => 5
-trigger('pow', 2, 5)(Math) // => 32
-```
-
-### method
-
-#### Definition
-
-```
-method :: string -> object -> * -> *
-```
-
-#### Example
-
-```javascript
-// Same order as when using "invoke", arguments are optional
-method('of', Array) // => []
-method('of', Array, 1) // => [1]
-```
-
-### assign
-
-#### Definition
-
-```
-assign :: * -> * -> object
-```
-
-#### Example
-
-```javascript
-// Returns the result of the assignment operation, see "effect" to prevent this behaviour
-assign('a', 1, {}) // => 1
-```
-
-### effect
-
-#### Definition
-
-```
-effect :: function -> * -> *
-```
-
-#### Example
-
-```javascript
-effect(console.log, 5) // => 5
-```
-
-### prop
-
-#### Definition
-
-```
-prop :: * -> * -> *
-```
-
-#### Example
-
-```javascript
-prop('key', { key: 1 }) // => 1
-prop(['key', 'a'], { key: { a: 1 } }) // => 1
-```
-
-### props
-
-#### Definition
-
-```
-props :: * -> * -> *
-```
-
-#### Example
-
-```javascript
-props(['key'], { key: 1 }) // => [1]
-props(['a', ['key', 'b']], { a: 0, key: { b: 1 } }) // => [0,1]
-```
-
-### field
-
-#### Definition
-
-```
-field :: * -> * -> *
-```
-
-#### Example
-
-```javascript
-field('key', new URLSearchParams([['key', 1]])) // => 1
-field('key', new Map([['key', 1]])) // => 1
-```
-
-### fields
-
-#### Definition
-
-```
-fields :: * -> * -> *
-```
-
-#### Example
-
-```javascript
-fields(['a', 'key'], new URLSearchParams([['a', 0], ['key', 1]])) // => [0,1]
-fields(['key'], new Map([['key', 1]])) // => [1]
-```
-
-### construct
-
-#### Definition
-
-```
-construct :: function -> * -> *
-```
-
-#### Example
-
-```javascript
-construct(URLSearchParams, [['x', 1], ['y', 2]]) // => URLSearchParams { size: 2 }
 ```
 
 ### condition
@@ -358,32 +199,60 @@ condition(
 ) // => false
 ```
 
-### raise
+### construct
 
 #### Definition
 
 ```
-raise :: * -> throws
+construct :: function -> ...parameters -> *
 ```
 
 #### Example
 
 ```javascript
-raise('Message') // => throws 'Message'
+construct(URLSearchParams, [['x', 1], ['y', 2]]) // => URLSearchParams { size: 2 }
 ```
 
-### satisfies
+### defer
 
 #### Definition
 
 ```
-satisfies :: function -> * -> boolean
+defer :: function -> ...parameters -> (() -> *)
 ```
 
 #### Example
 
 ```javascript
-satisfies((n) => n == 0, 0) // => true
+defer(console.log, '[message]') // => () => console.log('[message]')
+```
+
+### effect
+
+#### Definition
+
+```
+effect :: function -> parameter -> parameter
+```
+
+#### Example
+
+```javascript
+effect(console.log, 5) // => 5
+```
+
+### enforce
+
+#### Definition
+
+```
+enforce :: function -> parameter -> ...parameters -> parameter
+```
+
+#### Example
+
+```javascript
+enforce(console.log, true, 'a') // => Logs 'a', returns true
 ```
 
 ### extract
@@ -391,7 +260,7 @@ satisfies((n) => n == 0, 0) // => true
 #### Definition
 
 ```
-extract :: function -> * -> *
+extract :: ...function -> ...parameters -> *
 ```
 
 #### Example
@@ -408,44 +277,111 @@ extract(
 ) // => ['todo', '10']
 ```
 
-#### Example
-
-```javascript
-use(
-  Math.pow,
-  (n) => n + 2,
-  (n) => n + 3,
-)(0, 0) // => 8
-```
-
-### then
+### field
 
 #### Definition
 
 ```
-then :: function -> PromiseLike -> PromiseLike
+field :: string -> * -> *
 ```
 
 #### Example
 
 ```javascript
-then((n) => n + 5, Promise.resolve(0)) // => Promise { 5 }
+field('key', new URLSearchParams([['key', 1]])) // => 1
+field('key', new Map([['key', 1]])) // => 1
 ```
 
-### objectOf
+### fields
 
 #### Definition
 
 ```
-objectOf :: * -> * -> object
+fields :: string[] -> * -> *
 ```
 
 #### Example
 
 ```javascript
-objectOf('n', 0) // => { n: 0 }
+fields(['a', 'key'], new URLSearchParams([['a', 0], ['key', 1]])) // => [0,1]
+fields(['key'], new Map([['key', 1]])) // => [1]
+```
 
-objectOf(['a', 'b'], [0, 1]) // => { a: 0, b: 1 }
+### hasField
+
+#### Definition
+
+```
+hasField :: string -> * -> boolean
+hasField :: string[] -> * -> boolean
+```
+
+#### Example
+
+```javascript
+hasField('key', new URLSearchParams([['key', 1]])) // => true
+hasField('key', new Map([['key', 1]])) // => true
+```
+
+### hasProp
+
+#### Definition
+
+```
+hasProp :: string -> * -> boolean
+hasProp :: string[] -> * -> boolean
+```
+
+#### Example
+
+```javascript
+hasProp('size', new Map([['key', 1]])) // => true
+hasProp('key', new Map([['key', 1]])) // => false
+```
+
+### identity
+
+#### Definition
+
+```
+identity :: parameter -> parameter
+```
+
+#### Example
+
+```javascript
+identity(5) // => 5
+```
+
+### invoke
+
+#### Definition
+
+```
+invoke :: string -> object -> ...parameters -> *
+```
+
+#### Example
+
+```javascript
+// Arguments are required
+invoke('sqrt', Math, 25) // => 5
+```
+
+### method
+
+#### Definition
+
+```
+method :: string -> object -> ...parameters -> *
+```
+
+#### Example
+
+```javascript
+// Same order as when using "invoke", arguments are optional
+method('of', Array) // => []
+method('of', Array, 1) // => [1]
 ```
 
 ### modify
@@ -468,12 +404,133 @@ modify({
 }) // => { key: 'a', length: 5 }
 ```
 
+### objectOf
+
+#### Definition
+
+```
+objectOf :: string -> parameter -> object
+objectOf :: string[] -> parameter[] -> object
+```
+
+#### Example
+
+```javascript
+objectOf('n', 0) // => { n: 0 }
+
+objectOf(['a', 'b'], [0, 1]) // => { a: 0, b: 1 }
+```
+
+### partial
+
+#### Definition
+
+```
+partial :: function -> ...parameters -> *
+```
+
+#### Example
+
+```javascript
+partial((a, b) => a + b, 2) // => (b) => a + b
+```
+
+### prop
+
+#### Definition
+
+```
+prop :: string -> * -> *
+prop :: string[] -> * -> *
+```
+
+#### Example
+
+```javascript
+prop('key', { key: 1 }) // => 1
+prop(['key', 'a'], { key: { a: 1 } }) // => 1
+```
+
+### props
+
+#### Definition
+
+```
+props :: string[] -> * -> *
+props :: string[][] -> * -> *
+```
+
+#### Example
+
+```javascript
+props(['key'], { key: 1 }) // => [1]
+props(['a', ['key', 'b']], { a: 0, key: { b: 1 } }) // => [0,1]
+```
+
+### raise
+
+#### Definition
+
+```
+raise :: * -> Completion Record with a [[Type]] value of throw
+```
+
+#### Example
+
+```javascript
+raise('Message') // => throws 'Message'
+```
+
+### satisfies
+
+#### Definition
+
+```
+satisfies :: function -> ...parameters -> boolean
+```
+
+#### Example
+
+```javascript
+satisfies((n) => n == 0, 0) // => true
+```
+
+### then
+
+#### Definition
+
+```
+then :: function -> PromiseLike -> PromiseLike
+```
+
+#### Example
+
+```javascript
+then((n) => n + 5, Promise.resolve(0)) // => Promise { 5 }
+```
+
+### trigger
+
+#### Definition
+
+```
+trigger :: string -> ...parameters -> object -> *
+```
+
+#### Example
+
+```javascript
+// The order is different from when using "invoke", arguments are required
+trigger('sqrt', 25)(Math) // => 5
+trigger('pow', 2, 5)(Math) // => 32
+```
+
 ### unless
 
 #### Definition
 
 ```
-unless :: function -> function -> * -> *
+unless :: function -> function -> ...parameters -> *
 ```
 
 #### Example
@@ -491,13 +548,17 @@ unless(
 #### Definition
 
 ```
-use :: function -> function -> *
+use :: function -> ...function -> ...parameters -> *
 ```
 
 #### Example
 
 ```javascript
-// To do
+use(
+  Math.pow,
+  (n) => n + 2,
+  (n) => n + 3,
+)(0, 0) // => 8
 ```
 
 ### when
@@ -505,7 +566,7 @@ use :: function -> function -> *
 #### Definition
 
 ```
-when :: function -> function -> * -> *
+when :: function -> function -> ...parameters -> *
 ```
 
 #### Example

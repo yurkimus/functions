@@ -11,6 +11,6 @@ export var arity = curry((length, predicate, ...parameters) => {
   return predicate(...parameters.slice(0, length))
 }, 3)
 
-export var unary = arity.bind(null, 1)
+export var unary = arity(1)
 
-export var binary = arity.bind(null, 2)
+export var binary = arity(2)

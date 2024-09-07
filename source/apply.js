@@ -1,5 +1,5 @@
 import { curry } from '@yurkimus/curry'
-import { isLike } from '@yurkimus/types'
+import { is, isLike } from '@yurkimus/types'
 
 /**
  * Applies a function to an array of arguments.
@@ -17,12 +17,8 @@ export var apply = curry((predicate, parameters) => {
     throw new TypeError('"predicate" must be a function')
   }
 
-  if (!isLike('Array', parameters)) {
-    throw new TypeError('"parameters" must be an array-like')
-  }
-
-  if (!isLike('Iterable', parameters)) {
-    throw new TypeError('"parameters" must have "Symbol.iterator"')
+  if (!is('Array', parameters)) {
+    throw new TypeError('"parameters" must be an array')
   }
 
   return predicate(...parameters)

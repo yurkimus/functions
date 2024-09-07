@@ -1,3 +1,4 @@
+import { curry } from '@yurkimus/curry'
 import { isLike } from '@yurkimus/types'
 
 /**
@@ -25,25 +26,28 @@ import { isLike } from '@yurkimus/types'
  *  )(4) // => 49
  * ```
  */
-export var aggregate = (aggregator, ...predicates) => {
-  if (!isLike('Function', aggregator)) {
-    throw new TypeError('"aggregator" must be a function')
-  }
+export var aggregate = curry(
+  (aggregator, ...predicates) => {
+    if (!isLike('Function', aggregator)) {
+      throw new TypeError('"aggregator" must be a function')
+    }
 
-  if (!predicates.every(isLike('Function'))) {
-    throw new TypeError('"predicates" must be a list of functions')
-  }
+    if (!predicates.every(isLike('Function'))) {
+      throw new TypeError('"predicates" must be a list of functions')
+    }
 
-  return (...parameters) =>
-    predicates.reduceRight((parameters, predicate) => {
-      if (isLike('Array', parameters)) {
-        if (!isLike('Iterable', parameters)) {
-          throw new TypeError('"parameters" must have Symbol.iterator')
+    return (...parameters) =>
+      predicates.reduceRight((parameters, predicate) => {
+        if (isLike('Array', parameters)) {
+          if (!isLike('Iterable', parameters)) {
+            throw new TypeError('"parameters" must have Symbol.iterator')
+          }
+
+          return aggregator(predicate, ...parameters)
         }
 
-        return aggregator(predicate, ...parameters)
-      }
-
-      return aggregator(predicate, parameters)
-    }, parameters)
-}
+        return aggregator(predicate, parameters)
+      }, parameters)
+  },
+  2,
+)
