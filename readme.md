@@ -472,8 +472,10 @@ props(['a', ['key', 'b']], { a: 0, key: { b: 1 } }) // => [0,1]
 #### Definition
 
 ```
-raise :: * -> Completion Record with a [[Type]] value of throw
+raise :: * -> ThrowCompletion
 ```
+
+[ECMA 6.2.4.2 | ThrowCompletion](https://262.ecma-international.org/15.0/index.html#sec-throwcompletion)
 
 #### Example
 
