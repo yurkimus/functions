@@ -15,19 +15,21 @@ import { is, isLike } from '@yurkimus/types'
  * objectOf(['a', 'b'], [1, 2]) // => { a: 1, b: 2 }
  * ```
  */
-export var objectOf = curry((keys, values) => {
-  if (!is('String', keys) || !isLike('Array', keys)) {
-    throw new TypeError('"keys" must a string or an ArrayLike')
-  }
+export var objectOf = curry(
+  (keys, values) => {
+    if (!is('String', keys) || !isLike('Array', keys)) {
+      throw new TypeError('"keys" must be a string or an ArrayLike')
+    }
 
-  if (is('String', keys)) {
-    return { [keys]: values }
-  }
+    if (is('String', keys)) {
+      return { [keys]: values }
+    }
 
-  if (isLike('Array')) {
-    return Array.prototype.reduce.call(
-      (object, key, index) => ((object[key] = values[index]), object),
-      {},
-    )
-  }
-})
+    if (isLike('Array')) {
+      return Array.prototype.reduce.call(
+        (object, key, index) => ((object[key] = values[index]), object),
+        {},
+      )
+    }
+  },
+)

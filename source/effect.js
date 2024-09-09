@@ -11,10 +11,12 @@ import { isLike } from '@yurkimus/types'
  * effect(console.log, 'Hello') // Logs 'Hello', returns 'Hello'
  * ```
  */
-export var effect = curry((predicate, parameter) => {
-  if (!isLike('Function', predicate)) {
-    throw new TypeError('"predicate" must be a function')
-  }
+export var effect = curry(
+  (predicate, parameter) => {
+    if (!isLike('Function', predicate)) {
+      throw new TypeError('"predicate" must be a function')
+    }
 
-  return predicate(parameter), parameter
-})
+    return predicate(parameter), parameter
+  },
+)

@@ -21,15 +21,17 @@ export var prop = curry((properties, value) => {
  * @param {*} properties
  * @param {*} object
  */
-export var props = curry((properties, object) => {
-  if (!isLike('Array', properties)) {
-    throw new TypeError(
-      '"properties" must be an ArrayLike with elements according to the "properties" of the "prop" function',
-    )
-  }
+export var props = curry(
+  (properties, object) => {
+    if (!isLike('Array', properties)) {
+      throw new TypeError(
+        '"properties" must be an ArrayLike with elements according to the "properties" of the "prop" function',
+      )
+    }
 
-  return Array.prototype.map.call(
-    properties,
-    (property) => prop(property, object),
-  )
-})
+    return Array.prototype.map.call(
+      properties,
+      (property) => prop(property, object),
+    )
+  },
+)

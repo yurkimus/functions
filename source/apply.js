@@ -12,14 +12,16 @@ import { is, isLike } from '@yurkimus/types'
  * apply(Math.max, [1, 2, 3]) // => 3
  * ```
  */
-export var apply = curry((predicate, parameters) => {
-  if (!isLike('Function', predicate)) {
-    throw new TypeError('"predicate" must be a function')
-  }
+export var apply = curry(
+  (predicate, parameters) => {
+    if (!isLike('Function', predicate)) {
+      throw new TypeError('"predicate" must be a function')
+    }
 
-  if (!is('Array', parameters)) {
-    throw new TypeError('"parameters" must be an array')
-  }
+    if (!is('Array', parameters)) {
+      throw new TypeError('"parameters" must be an array')
+    }
 
-  return predicate(...parameters)
-}, 2)
+    return predicate(...parameters)
+  },
+)

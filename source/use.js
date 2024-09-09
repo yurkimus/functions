@@ -12,17 +12,20 @@ import { isLike } from '@yurkimus/types'
  * use(Math.pow, x => x, x => x + 2)(5, 1) // => 25
  * ```
  */
-export var use = curry((aggregator, ...predicates) => {
-  if (!isLike('Function', aggregator)) {
-    throw new TypeError('"aggregator" must be a function')
-  }
+export var use = curry(
+  (aggregator, ...predicates) => {
+    if (!isLike('Function', aggregator)) {
+      throw new TypeError('"aggregator" must be a function')
+    }
 
-  if (!predicates.every(isLike('Function'))) {
-    throw new TypeError('"predicates" must be an array of functions')
-  }
+    if (!predicates.every(isLike('Function'))) {
+      throw new TypeError('"predicates" must be an array of functions')
+    }
 
-  return (...parameters) =>
-    aggregator(
-      ...predicates.map((predicate, index) => predicate(parameters[index])),
-    )
-}, 2)
+    return (...parameters) =>
+      aggregator(
+        ...predicates.map((predicate, index) => predicate(parameters[index])),
+      )
+  },
+  2,
+)

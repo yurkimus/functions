@@ -14,14 +14,17 @@ import { isLike } from '@yurkimus/types'
  * invoke('at', ['a', 'b', 'c'], 1) // => 'b'
  * ```
  */
-export var invoke = curry((method, object, ...parameters) => {
-  if (!(method in object)) {
-    throw new TypeError('"method" must exist on "object"')
-  }
+export var invoke = curry(
+  (method, object, ...parameters) => {
+    if (!(method in object)) {
+      throw new TypeError('"method" must exist on "object"')
+    }
 
-  if (!isLike('Function', object[method])) {
-    throw new TypeError('"method" must be a function')
-  }
+    if (!isLike('Function', object[method])) {
+      throw new TypeError('"method" must be a function')
+    }
 
-  return object[method](...parameters)
-}, 3)
+    return object[method](...parameters)
+  },
+  3,
+)

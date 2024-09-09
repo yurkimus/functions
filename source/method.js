@@ -14,14 +14,17 @@ import { isLike } from '@yurkimus/types'
  * method('toUpperCase', 'Hello!') // => 'HELLO!'
  * ```
  */
-export var method = curry((method, object, ...parameters) => {
-  if (!(method in object)) {
-    throw new TypeError('"method" must exists on "object"')
-  }
+export var method = curry(
+  (method, object, ...parameters) => {
+    if (!(method in object)) {
+      throw new TypeError('"method" must exists on "object"')
+    }
 
-  if (!isLike('Function', object[method])) {
-    throw new TypeError('"method" must be a function')
-  }
+    if (!isLike('Function', object[method])) {
+      throw new TypeError('"method" must be a function')
+    }
 
-  return object[method](...parameters)
-}, 2)
+    return object[method](...parameters)
+  },
+  2,
+)

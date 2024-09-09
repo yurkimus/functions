@@ -13,10 +13,13 @@ import { isLike } from '@yurkimus/types'
  * partial(add, 1)(2) // => 3
  * ```
  */
-export var partial = curry((predicate, ...parameters) => {
-  if (!isLike('Function', predicate)) {
-    throw new TypeError('"predicate" must be a function')
-  }
+export var partial = curry(
+  (predicate, ...parameters) => {
+    if (!isLike('Function', predicate)) {
+      throw new TypeError('"predicate" must be a function')
+    }
 
-  return predicate.bind(null, ...parameters)
-}, 2)
+    return predicate.bind(null, ...parameters)
+  },
+  2,
+)

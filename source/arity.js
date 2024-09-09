@@ -1,4 +1,5 @@
 import { curry } from '@yurkimus/curry'
+import { isLike } from '@yurkimus/types'
 
 /**
  * @throws {TypeError} "predicate" must be a function

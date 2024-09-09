@@ -13,10 +13,13 @@ import { isLike } from '@yurkimus/types'
  * defer(add, 1, 2)() // => 3
  * ```
  */
-export var defer = curry((predicate, ...parameters) => {
-  if (!isLike('Function', predicate)) {
-    throw new TypeError('"predicate" must be a function')
-  }
+export var defer = curry(
+  (predicate, ...parameters) => {
+    if (!isLike('Function', predicate)) {
+      throw new TypeError('"predicate" must be a function')
+    }
 
-  return () => predicate(...parameters)
-}, 2)
+    return () => predicate(...parameters)
+  },
+  2,
+)

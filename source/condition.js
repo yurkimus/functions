@@ -18,20 +18,23 @@ import { isLike } from '@yurkimus/types'
  * )(true) // => Logs 'True'
  * ```
  */
-export var condition = curry((predicate, onTrue, onFalse, ...parameters) => {
-  if (!isLike('Function', predicate)) {
-    throw new TypeError('"predicate" must be a function')
-  }
+export var condition = curry(
+  (predicate, onTrue, onFalse, ...parameters) => {
+    if (!isLike('Function', predicate)) {
+      throw new TypeError('"predicate" must be a function')
+    }
 
-  if (!isLike('Function', onTrue)) {
-    throw new TypeError('"onTrue" must be a function')
-  }
+    if (!isLike('Function', onTrue)) {
+      throw new TypeError('"onTrue" must be a function')
+    }
 
-  if (!isLike('Function', onFalse)) {
-    throw new TypeError('"onFalse" must be a function')
-  }
+    if (!isLike('Function', onFalse)) {
+      throw new TypeError('"onFalse" must be a function')
+    }
 
-  return predicate(...parameters)
-    ? onTrue(...parameters)
-    : onFalse(...parameters)
-}, 4)
+    return predicate(...parameters)
+      ? onTrue(...parameters)
+      : onFalse(...parameters)
+  },
+  4,
+)

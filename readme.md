@@ -7,6 +7,7 @@ Functions with arity more than 1 are curried.
 ## Table of Contents
 
 - [Installation](#installation)
+- [Requirements](#requirements)
 - [Exports](#exports)
   - [aggregate](#aggregate)
   - [apply](#apply)
@@ -64,6 +65,27 @@ npm install @yurkimus/functions
 ```
 "@yurkimus/functions": "https://raw.githubusercontent.com/yurkimus/functions/main/source/index.js"
 ```
+
+## Requirements
+
+Modules:
+
+- [Module | @yurkimus/curry](https://github.com/yurkimus/curry)
+- [Module | @yurkimus/types](https://github.com/yurkimus/types)
+
+Runtime:
+
+- [Array.prototype.at](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.at)
+- [Array.prototype.every](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.every)
+- [Array.prototype.includes](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.includes)
+- [Array.prototype.reduce](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.reduce)
+- [Array.prototype.reduceRight](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.reduceright)
+- [Array.prototype.slice](https://262.ecma-international.org/15.0/index.html#sec-array.prototype.slice)
+- [Array.prototype.[@@iterator]](https://262.ecma-international.org/15.0/index.html#sec-array.prototype-@@iterator)
+- [Function.prototype.bind](https://262.ecma-international.org/15.0/index.html#sec-function.prototype.bind)
+- [Object.hasOwn](https://262.ecma-international.org/15.0/index.html#sec-object.hasown)
+- [Reflect.construct](https://262.ecma-international.org/15.0/index.html#sec-reflect.construct)
+- [Optional chains (?.)](https://262.ecma-international.org/15.0/index.html#sec-optional-chains)
 
 ## Exports
 
@@ -290,6 +312,8 @@ field :: string -> * -> *
 ```javascript
 field('key', new URLSearchParams([['key', 1]])) // => 1
 field('key', new Map([['key', 1]])) // => 1
+// When working with 'Object' type, the function uses `Object.hasOwn` to check if the object has it's own proeprty. To access properties through the prototype chain as well, you can use `prop` function
+field('toString', {}) // => false
 ```
 
 ### fields

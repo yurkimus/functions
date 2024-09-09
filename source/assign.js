@@ -1,5 +1,5 @@
 import { curry } from '@yurkimus/curry'
-import { type } from '@yurkimus/types'
+import { isLike } from '@yurkimus/types'
 
 /**
  * Assigns a property to an object.
@@ -11,10 +11,12 @@ import { type } from '@yurkimus/types'
  * assign('a', 1, { b: 2 }) // => 1
  * ```
  */
-export var assign = curry((property, value, object) => {
-  if (['Null', 'Undefined'].includes(type(object))) {
-    throw new TypeError('"object" must be a truthy value')
-  }
+export var assign = curry(
+  (property, value, object) => {
+    if (!isLike('Object', object)) {
+      throw new TypeError('"object" must be an object')
+    }
 
-  return (object[property] = value)
-})
+    return object[property] = value
+  },
+)
