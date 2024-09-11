@@ -12,7 +12,7 @@ import { isLike } from '@yurkimus/types'
  * ```
  */
 export var assign = curry(
-  (property, value, object) => {
+  (value, property, object) => {
     if (!isLike('Object', object)) {
       throw new TypeError('"object" must be an object')
     }

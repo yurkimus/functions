@@ -178,14 +178,14 @@ binary(Math.max, 1, 2, 3) // => 2
 #### Definition
 
 ```
-assign :: string -> parameter -> object
+assign :: parameter -> string -> object
 ```
 
 #### Example
 
 ```javascript
 // Returns the result of the assignment operation, see "effect" to prevent this behaviour
-assign('a', 1, {}) // => 1
+assign(1, 'a', {}) // => 1
 ```
 
 ### compose
