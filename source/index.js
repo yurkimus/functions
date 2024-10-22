@@ -1,6 +1,8 @@
 import { curry } from '@yurkimus/curry'
 import { is } from '@yurkimus/types'
 
+export let arrow = () => () => void 0
+
 export let asynchronous = curry(
   (predicate, ...parameters) => {
     if (!is('Function', predicate))
