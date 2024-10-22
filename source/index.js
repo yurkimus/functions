@@ -1,7 +1,7 @@
 import { curry } from '@yurkimus/curry'
 import { is } from '@yurkimus/types'
 
-export let arrow = () => () => void 0
+export let arrow = () => void 0
 
 export let asynchronous = curry(
   (predicate, ...parameters) => {
@@ -16,7 +16,6 @@ export let asynchronous = curry(
       }
     })
   },
-  2,
 )
 
 export let construct = curry(
