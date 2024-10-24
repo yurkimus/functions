@@ -1,6 +1,6 @@
 {
   "name": "@yurkimus/functions",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "exports": "./source/index.js",
   "imports": {
     "@yurkimus/curry": "https://raw.githubusercontent.com/yurkimus/curry/main/source/index.js",

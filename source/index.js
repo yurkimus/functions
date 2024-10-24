@@ -3,6 +3,16 @@ import { is } from '@yurkimus/types'
 
 export let always = parameter => () => parameter
 
+export let apply = curry(
+  (predicate, ...parameters) => {
+    if (typeof predicate !== 'function')
+      throw new TypeError(`Parameter 'predicate' must be a function.`)
+
+    return predicate.apply(null, ...parameters)
+  },
+  2,
+)
+
 export let asynchronous = (predicate, ...parameters) => {
   if (typeof predicate !== 'function')
     throw new TypeError(`Parameter 'predicate' must be a function.`)

@@ -10,6 +10,7 @@ Functions with arity more than 1 are curried.
 - [Requirements](#requirements)
 - [Exports](#exports)
   - [always](#always)
+  - [apply](#apply)
   - [asynchronous](#asynchronous)
   - [construct](#construct)
   - [defer](#defer)
@@ -62,6 +63,18 @@ Runtime:
 ## Exports
 
 ### always
+
+#### Definition
+
+```js
+```
+
+#### Example
+
+```js
+```
+
+### apply
 
 #### Definition
 
