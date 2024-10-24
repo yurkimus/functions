@@ -14,6 +14,7 @@ Functions with arity more than 1 are curried.
   - [defer](#defer)
   - [effect](#effect)
   - [has](#has)
+  - [identity](#identity)
   - [partial](#partial)
   - [prop](#prop)
 - [License](#license)
@@ -108,6 +109,18 @@ Runtime:
 ```
 
 ### has
+
+#### Definition
+
+```js
+```
+
+#### Example
+
+```js
+```
+
+### identity
 
 #### Definition
 

@@ -53,6 +53,8 @@ export let has = curry(
       : value && typeof value === 'object' && properties in value,
 )
 
+export let identity = parameter => parameter
+
 export let partial = curry(
   (predicate, ...parameters) => {
     if (typeof predicate !== 'function')
