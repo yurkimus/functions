@@ -78,8 +78,3 @@ export let raise = (predicate, ...parameters) => {
 
   throw predicate(...parameters)
 }
-
-asynchronous(defer(
-  raise,
-  construct(TypeError, `Not implemented: '${0}' '${1}'.`),
-))
