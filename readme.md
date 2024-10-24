@@ -9,7 +9,6 @@ Functions with arity more than 1 are curried.
 - [Installation](#installation)
 - [Requirements](#requirements)
 - [Exports](#exports)
-  - [arrow](#arrow)
   - [asynchronous](#asynchronous)
   - [construct](#construct)
   - [defer](#defer)
@@ -59,18 +58,6 @@ Runtime:
 - [Optional chains (?.)](https://262.ecma-international.org/15.0/index.html#sec-optional-chains)
 
 ## Exports
-
-### arrow
-
-#### Definition
-
-```js
-```
-
-#### Example
-
-```js
-```
 
 ### asynchronous
 

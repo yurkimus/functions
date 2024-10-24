@@ -1,26 +1,22 @@
 import { curry } from '@yurkimus/curry'
 import { is } from '@yurkimus/types'
 
-export let arrow = () => void 0
+export let asynchronous = (predicate, ...parameters) => {
+  if (typeof predicate !== 'function')
+    throw new TypeError(`Parameter 'predicate' must be a function.`)
 
-export let asynchronous = curry(
-  (predicate, ...parameters) => {
-    if (!is('Function', predicate))
-      throw new TypeError(`Parameter 'predicate' must be a function.`)
-
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(predicate(...parameters))
-      } catch (reason) {
-        reject(reason)
-      }
-    })
-  },
-)
+  return new Promise((resolve, reject) => {
+    try {
+      resolve(predicate(...parameters))
+    } catch (reason) {
+      reject(reason)
+    }
+  })
+}
 
 export let construct = curry(
   (predicate, ...parameters) => {
-    if (!is('Function', predicate))
+    if (typeof predicate !== 'function')
       throw new TypeError(`Parameter 'predicate' must be a function.`)
 
     return Reflect.construct(predicate, parameters)
@@ -30,7 +26,7 @@ export let construct = curry(
 
 export let defer = curry(
   (predicate, ...parameters) => {
-    if (!is('Function', predicate))
+    if (typeof predicate !== 'function')
       throw new TypeError(`Parameter 'predicate' must be a function.`)
 
     return () => predicate(...parameters)
@@ -40,7 +36,7 @@ export let defer = curry(
 
 export let effect = curry(
   (predicate, value) => {
-    if (!is('Function', predicate))
+    if (typeof predicate !== 'function')
       throw new TypeError(`Parameter 'predicate' must be a function.`)
 
     return (predicate(value), value)
@@ -59,7 +55,7 @@ export let has = curry(
 
 export let partial = curry(
   (predicate, ...parameters) => {
-    if (!is('Function', predicate))
+    if (typeof predicate !== 'function')
       throw new TypeError(`Parameter 'predicate' must be a function.`)
 
     return predicate.bind(null, ...parameters)
@@ -73,3 +69,15 @@ export let prop = curry(
       ? properties.reduce((value, property) => value?.[property], value)
       : value?.[properties],
 )
+
+export let raise = (predicate, ...parameters) => {
+  if (typeof predicate !== 'function')
+    throw new TypeError(`Parameter 'predicate' must be a function.`)
+
+  throw predicate(...parameters)
+}
+
+asynchronous(defer(
+  raise,
+  construct(TypeError, `Not implemented: '${0}' '${1}'.`),
+))

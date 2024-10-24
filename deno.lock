@@ -1,0 +1,7 @@
+{
+  "version": "3",
+  "remote": {
+    "https://raw.githubusercontent.com/yurkimus/curry/main/source/index.js": "b34edaeecae372b74c6451e630a28bf8b5531c2024d797e45860c9c519cbbefc",
+    "https://raw.githubusercontent.com/yurkimus/types/main/source/index.js": "e421eb4c9b76178879333eae2ed8234f0c89e44694b2fdd4cbf1f94a5c4c52e5"
+  }
+}
