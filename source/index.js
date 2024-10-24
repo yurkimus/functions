@@ -1,6 +1,8 @@
 import { curry } from '@yurkimus/curry'
 import { is } from '@yurkimus/types'
 
+export let always = parameter => () => parameter
+
 export let asynchronous = (predicate, ...parameters) => {
   if (typeof predicate !== 'function')
     throw new TypeError(`Parameter 'predicate' must be a function.`)
