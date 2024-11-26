@@ -3,5 +3,10 @@
   "version": "0.0.14",
   "author": "yurkimus <yurkimus@gmail.com>",
 
-  "exports": "./source/index.js"
+  "exports": "./source/index.js",
+
+  "dependencies": {
+    "@yurkimus/types": "github:yurkimus/types",
+    "@yurkimus/curry": "github:yurkimus/curry"
+  }
 }
