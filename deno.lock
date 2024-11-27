@@ -1,7 +1,30 @@
 {
-  "version": "3",
+  "version": "4",
+  "specifiers": {
+    "npm:@yurkimus/curry@*": "0.0.6",
+    "npm:@yurkimus/types@*": "0.0.16"
+  },
+  "npm": {
+    "@yurkimus/curry@0.0.6": {
+      "integrity": "sha512-eZxX/+PgBy/EKlh0GqhiG0LvBlsQNNP4j3XpP0vsdCg98ydeRRSec2XeQYrwQyFJbH20xM8vZw283q6fmEkz9w==",
+      "dependencies": [
+        "@yurkimus/types"
+      ]
+    },
+    "@yurkimus/types@0.0.16": {
+      "integrity": "sha512-Hpn1C1fwcY/Uw9HW2X5RxsBnQG+3gacljfHWcHqIsPjEYpa0tYl+54BC/oQLRaNwbKSxd7oMOzpkU8AMOs8qCg=="
+    }
+  },
   "remote": {
     "https://raw.githubusercontent.com/yurkimus/curry/main/source/index.js": "b34edaeecae372b74c6451e630a28bf8b5531c2024d797e45860c9c519cbbefc",
     "https://raw.githubusercontent.com/yurkimus/types/main/source/index.js": "e421eb4c9b76178879333eae2ed8234f0c89e44694b2fdd4cbf1f94a5c4c52e5"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@yurkimus/curry@*",
+        "npm:@yurkimus/types@*"
+      ]
+    }
   }
 }

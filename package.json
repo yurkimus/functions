@@ -1,12 +1,20 @@
 {
+  "type": "module",
+
   "name": "@yurkimus/functions",
-  "version": "0.0.14",
+
+  "version": "0.0.15",
   "author": "yurkimus <yurkimus@gmail.com>",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yurkimus/functions.git"
+  },
 
   "exports": "./source/index.js",
 
   "dependencies": {
-    "@yurkimus/types": "github:yurkimus/types",
-    "@yurkimus/curry": "github:yurkimus/curry"
+    "@yurkimus/types": "npm:@yurkimus/types",
+    "@yurkimus/curry": "npm:@yurkimus/curry"
   }
 }
