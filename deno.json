@@ -1,5 +1,5 @@
 {
-  "version": "0.0.16",
+  "version": "0.0.17",
 
   "imports": {
     "@yurkimus/curry": "https://raw.githubusercontent.com/yurkimus/curry/main/source/index.js",
